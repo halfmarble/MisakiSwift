@@ -20,9 +20,15 @@
 >   [#19](https://github.com/mlalma/MisakiSwift/pull/19) and
 >   [#13](https://github.com/mlalma/MisakiSwift/pull/13).
 >
-> **What this is not.** Not a maintained project and not a replacement for upstream. We
-> are not taking over the library; we will not be triaging issues or adding features. If
-> upstream merges these, use upstream. Pin a commit if you depend on this.
+> **What this is not.** Not a hostile fork, and not a claim that upstream is wrong.
+> Everything here has been offered upstream as an issue or a PR, and if upstream
+> merges them we would rather you used upstream.
+>
+> **Maintenance.** halfmarble maintains this fork and intends to keep fixing and
+> extending it, because we ship it in production software — bugs here reach real
+> users, so they get fixed here first. Issues and pull requests are welcome. We
+> make no release-cadence or backwards-compatibility promise; pin a commit if you
+> need one.
 >
 > Apache-2.0, same as upstream. Modified files carry a notice as section 4(b) requires.
 
