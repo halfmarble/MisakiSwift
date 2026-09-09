@@ -12,10 +12,13 @@ concurrency:
 
 jobs:
   test:
-    # macos-15 or later: Package.swift declares .macOS(.v15).
-    # Must be an Apple Silicon runner — MLX needs Metal, and the tests reach it
-    # through the BART fallback network for out-of-vocabulary words.
-    runs-on: macos-15
+    # macos-26, not macos-15: Package.swift declares swift-tools-version 6.2,
+    # and the macos-15 image still defaults to Xcode 16.4 / Swift 6.1, which
+    # fails at dependency resolution before it builds anything. macos-26
+    # defaults to Xcode 26.x / Swift 6.3.
+    # Apple Silicon either way, which MLX needs — the tests reach it through
+    # the BART fallback network for out-of-vocabulary words.
+    runs-on: macos-26
 
     steps:
       - uses: actions/checkout@v4
