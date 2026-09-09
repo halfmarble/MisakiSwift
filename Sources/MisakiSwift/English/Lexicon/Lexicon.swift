@@ -198,7 +198,22 @@ final class Lexicon {
       return lookup(target, tag: nil, stress: -0.5, ctx: ctx)
     } else if let sym = Lexicon.symbolSet[word] {
       return lookup(sym, tag: nil, stress: nil, ctx: ctx)
-    } else if word.trimmingCharacters(in: CharacterSet(charactersIn: ".")).contains(".") {
+    } else if word.trimmingCharacters(in: CharacterSet(charactersIn: ".")).contains("."),
+              word.contains(where: { $0.isLetter }) {
+      // THE `isLetter` GUARD IS LOAD-BEARING: without it this branch swallows
+      // decimal numbers. It is the initialism path — "U.S.A.", "M.R.C.S." —
+      // recognised by every dot-separated part being shorter than 3. A decimal
+      // like "3.5" splits to ["3","5"], max length 1, and looks identical to
+      // "U.S". It was then handed to getNNP, which spells out LETTERS, found
+      // none, and returned an EMPTY STRING rather than nil — and an empty
+      // string is not nil, so `transcribe` took it as a successful lookup and
+      // never reached the number path. The number vanished from the audio with
+      // nothing logged.
+      //
+      // The cutoff is why it looked so arbitrary: "3.500" and "100.1" have a
+      // 3-character part and were spoken correctly, while "3.5", "0.5", "12.5"
+      // and "9.99" were silent. Same value, different text — "3.500" worked and
+      // "3.5" did not.
       let parts = word.split(separator: ".")
       if parts.map({ $0.count }).max() ?? 0 < 3 {
         return getNNP(word)
