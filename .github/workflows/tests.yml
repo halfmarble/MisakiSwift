@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # macos-15 or later: Package.swift declares .macOS(.v15).
+    # Must be an Apple Silicon runner — MLX needs Metal, and the tests reach it
+    # through the BART fallback network for out-of-vocabulary words.
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Test
+        # xcodebuild, NOT `swift test`. SwiftPM on the command line cannot
+        # compile Metal shaders, so mlx-swift's default.metallib is never built
+        # and every test aborts with "Failed to load the default metallib"
+        # while the process still exits 0. See README, "Running the Tests".
+        run: |
+          xcodebuild test \
+            -scheme MisakiSwift \
+            -destination 'platform=macOS' \
+            -resultBundlePath TestResults.xcresult
+
+      - name: Upload results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          retention-days: 7
