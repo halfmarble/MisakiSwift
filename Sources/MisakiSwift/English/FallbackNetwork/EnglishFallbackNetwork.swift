@@ -1,3 +1,7 @@
+// MODIFIED FROM UPSTREAM by Halfmarble LLC, 2026. Apache License 2.0 section
+// 4(b): the bundled resource directory was renamed Resources/ -> MisakiData/,
+// because iOS codesign rejects a resource bundle whose top-level folder is
+// literally named "Resources" ("bundle format unrecognized").
 import Foundation
 import MLX
 import MLXUtilsLibrary
@@ -76,7 +80,7 @@ final class EnglishFallbackNetwork {
     let fileName = "\(british ? "gb" : "us")_bart_config"
     
     
-    guard let url = Bundle.module.url(forResource: fileName, withExtension: "json", subdirectory: "Resources"),
+    guard let url = Bundle.module.url(forResource: fileName, withExtension: "json", subdirectory: "MisakiData"),
           let data = try? Data(contentsOf: url),
           let config = try? JSONDecoder().decode(BARTConfig.self, from: data) else {
         return nil
@@ -86,7 +90,7 @@ final class EnglishFallbackNetwork {
   
   private static func loadWeights(british: Bool) -> [String: MLXArray]? {
     let fileName = "\(british ? "gb" : "us")_bart"
-    guard let url = Bundle.module.url(forResource: fileName, withExtension: "safetensors", subdirectory: "Resources"),
+    guard let url = Bundle.module.url(forResource: fileName, withExtension: "safetensors", subdirectory: "MisakiData"),
           let weights = try? MLX.loadArrays(url: url) else {
       return nil
     }

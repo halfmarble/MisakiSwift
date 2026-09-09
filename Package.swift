@@ -1,4 +1,8 @@
 // swift-tools-version: 6.2
+// MODIFIED FROM UPSTREAM by Halfmarble LLC, 2026. Apache License 2.0 section
+// 4(b). Changes: resource directory renamed to MisakiData/ so iOS codesign
+// accepts the bundle; mlx-swift pinned to 0.31.6; the library product's
+// explicit `type: .dynamic` removed. See the commit history for each.
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -28,7 +32,7 @@ let package = Package(
         .product(name: "MLXUtilsLibrary", package: "MLXUtilsLibrary")
      ],
      resources: [
-      .copy("Resources")
+      .copy("MisakiData")
      ]
     ),
     .testTarget(
