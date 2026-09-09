@@ -33,10 +33,20 @@ jobs:
         # compile Metal shaders, so mlx-swift's default.metallib is never built
         # and every test aborts with "Failed to load the default metallib"
         # while the process still exits 0. See README, "Running the Tests".
+        #
+        # -skipPackagePluginValidation: mlx-swift ships a CudaBuild build
+        # plugin, and Xcode refuses to run an unapproved package plugin. A
+        # developer machine approves it once interactively; a fresh runner has
+        # nothing to approve with, and fails with "Plugin CudaBuild ... must be
+        # enabled before it can be used".
+        #
+        # arch=arm64 pins the destination: the runner matches seven macOS
+        # destinations and xcodebuild otherwise picks the first and warns.
         run: |
           xcodebuild test \
             -scheme MisakiSwift \
-            -destination 'platform=macOS' \
+            -destination 'platform=macOS,arch=arm64' \
+            -skipPackagePluginValidation \
             -resultBundlePath TestResults.xcresult
 
       - name: Upload results on failure
