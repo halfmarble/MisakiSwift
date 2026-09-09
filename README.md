@@ -1,4 +1,31 @@
-# MisakiSwift
+# MisakiSwift — halfmarble fork
+
+> **What this is.** A fork of [mlalma/MisakiSwift](https://github.com/mlalma/MisakiSwift)
+> carrying three fixes we needed to ship an iOS app, kept here so others can use them.
+> Upstream has been quiet since June 2026 and has nine open pull requests; several of
+> them fix the same things independently. Nothing here is novel — it is these fixes
+> applied together and tested as a set, which no single upstream PR gives you.
+>
+> - **Numbers 21-29 lost their tens word.** `convert(24)` returned `"-four"` and was
+>   spoken as "four". It reached composites (`124` -> "one hundred and -four") and years
+>   (`2024` -> "twenty -four"). One missing table row. Also filed upstream as
+>   [#16](https://github.com/mlalma/MisakiSwift/issues/16) and fixed in
+>   [#18](https://github.com/mlalma/MisakiSwift/pull/18).
+> - **iOS codesign rejected the resource bundle** whose top folder was named
+>   `Resources`. Renamed to `MisakiData/`. Same ground as
+>   [#20](https://github.com/mlalma/MisakiSwift/pull/20).
+> - **mlx-swift pinned to 0.31.6** (0.30.2 will not link against the iOS 26 simulator
+>   SDK) and the library product left to link statically, so an app does not end up with
+>   two MLX runtimes. Same ground as
+>   [#19](https://github.com/mlalma/MisakiSwift/pull/19) and
+>   [#13](https://github.com/mlalma/MisakiSwift/pull/13).
+>
+> **What this is not.** Not a maintained project and not a replacement for upstream. We
+> are not taking over the library; we will not be triaging issues or adding features. If
+> upstream merges these, use upstream. Pin a commit if you depend on this.
+>
+> Apache-2.0, same as upstream. Modified files carry a notice as section 4(b) requires.
+
 
 A Swift port of the [Misaki](https://github.com/hexgrad/misaki) grapheme-to-phoneme (G2P) library for converting English text to phonetic representations suitable for text-to-speech (TTS) engines.
 
