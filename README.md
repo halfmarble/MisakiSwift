@@ -3,9 +3,11 @@
 > **What this is.** A fork of [mlalma/MisakiSwift](https://github.com/mlalma/MisakiSwift)
 > carrying the pronunciation, packaging and performance fixes we needed to ship this package
 > in an iOS app, kept here so others can use them. Upstream has been quiet since June 2026.
-> Nothing here is novel — almost every change has an upstream issue or pull request, or comes
-> from another public fork, and is credited where it does. The value is the set, applied
-> together and tested as a set, which no single upstream PR gives you.
+> Nothing here is novel. Some of it we have filed upstream ourselves, some was reported
+> upstream by other people, some comes from other public forks and is credited where it does,
+> and some has not been offered upstream at all — [FORK_CHANGES.md](FORK_CHANGES.md#upstream-status)
+> says which is which. The value is the set, applied together and tested as a set, which no
+> single upstream PR gives you.
 >
 > **[FORK_CHANGES.md](FORK_CHANGES.md) lists every change, what it fixes, and which release it
 > first shipped in.** In short: 21 through 29 lost their tens word; decimals were read through a
@@ -14,9 +16,10 @@
 > out-of-vocabulary fallback is memoized. Plus the three things it takes to ship on iOS — the
 > resource bundle rename, the mlx-swift pin, and static linking.
 >
-> **What this is not.** Not a hostile fork, and not a claim that upstream is wrong. Everything
-> here has been offered upstream as an issue or a PR, and if upstream merges them we would
-> rather you used upstream.
+> **What this is not.** Not a hostile fork, and not a claim that upstream is wrong. Four of
+> these changes are open upstream as our own pull requests, others are covered by reports from
+> other people, and some have not been offered upstream by anyone. If upstream fixes them we
+> would rather you used upstream.
 >
 > **Maintenance.** halfmarble maintains this fork and intends to keep fixing and extending it,
 > because we ship it in production software — bugs here reach real users, so they get fixed

@@ -5,12 +5,36 @@ top of [mlalma/MisakiSwift](https://github.com/mlalma/MisakiSwift), why it is he
 which release it first shipped in. The README says what the fork *is*; this file tracks
 what is *in* it, and it is updated in the same commit as the change it describes.
 
-Nothing here is novel. Almost every entry has an upstream issue or pull request, or comes
-from another public fork, and is credited where it does. The value is the set, applied
-together and tested as a set — which no single upstream PR gives you.
+Nothing here is novel, and the upstream position for each entry is set out under
+[Upstream status](#upstream-status) below rather than implied. Several entries come from other
+public forks and are credited where they do. The value is the set, applied together and tested
+as a set — which no single upstream PR gives you.
 
 **Fork releases start at 2.0.0.** The inherited `1.0.x` tags are upstream's code and carry
 none of this. Pin an exact version if you need one: there is no compatibility promise.
+
+## Upstream status
+
+Stated plainly, because a fork that implies more upstream engagement than it has is worse than
+one that claims none.
+
+| change | upstream |
+|---|---|
+| Hyphen in a compound | **ours, open**: [#21](https://github.com/mlalma/MisakiSwift/pull/21) |
+| Decimal parsed as base-10 text | **ours, open**: [#22](https://github.com/mlalma/MisakiSwift/pull/22) |
+| CI | **ours, open**: [#25](https://github.com/mlalma/MisakiSwift/pull/25) |
+| Running the tests, in the README | **ours, open**: [#24](https://github.com/mlalma/MisakiSwift/pull/24) |
+| The missing tens word | reported by others: issues [#16](https://github.com/mlalma/MisakiSwift/issues/16), [#10](https://github.com/mlalma/MisakiSwift/issues/10); PRs [#18](https://github.com/mlalma/MisakiSwift/pull/18), [#11](https://github.com/mlalma/MisakiSwift/pull/11) |
+| Resource bundle rename | reported by others: PRs [#6](https://github.com/mlalma/MisakiSwift/pull/6), [#15](https://github.com/mlalma/MisakiSwift/pull/15), [#19](https://github.com/mlalma/MisakiSwift/pull/19), [#20](https://github.com/mlalma/MisakiSwift/pull/20) |
+| mlx-swift pin, static linking | reported by others: PRs [#7](https://github.com/mlalma/MisakiSwift/pull/7), [#13](https://github.com/mlalma/MisakiSwift/pull/13) |
+| Short decimal read as an initialism | [@Fe2-O3](https://github.com/Fe2-O3) opened [#26](https://github.com/mlalma/MisakiSwift/pull/26) for the same bug hours after our commit, independently. Ours is not filed |
+| `%`, `&`, `@`; the digit guard; verb tense; the memoized fallback | **not offered upstream by anyone.** All four come from other public forks, credited in place |
+
+We have also filed [#23](https://github.com/mlalma/MisakiSwift/issues/23), on numbers formatted
+with non-English separators, which this fork does not yet fix.
+
+If you want any of the unoffered work upstream, the commits are self-contained and you are
+welcome to take them there.
 
 ## Pronunciation fixes
 
