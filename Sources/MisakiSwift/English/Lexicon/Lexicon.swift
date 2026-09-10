@@ -199,8 +199,8 @@ final class Lexicon {
     } else if let sym = Lexicon.symbolSet[word] {
       return lookup(sym, tag: nil, stress: nil, ctx: ctx)
     } else if word.trimmingCharacters(in: CharacterSet(charactersIn: ".")).contains("."),
-              word.contains(where: { $0.isLetter }) {
-      // THE `isLetter` GUARD IS LOAD-BEARING: without it this branch swallows
+              !word.contains(where: { $0.isNumber }) {
+      // THE GUARD IS LOAD-BEARING: without it this branch swallows
       // decimal numbers. It is the initialism path — "U.S.A.", "M.R.C.S." —
       // recognised by every dot-separated part being shorter than 3. A decimal
       // like "3.5" splits to ["3","5"], max length 1, and looks identical to
@@ -209,6 +209,14 @@ final class Lexicon {
       // string is not nil, so `transcribe` took it as a successful lookup and
       // never reached the number path. The number vanished from the audio with
       // nothing logged.
+      //
+      // THE PREDICATE IS "no digit", NOT "has a letter", and the difference is
+      // not cosmetic. Both keep "3.5" out and let "U.S.A" in, so pure cases
+      // cannot tell them apart. Tokens carrying BOTH can: with "has a letter",
+      // "v1.2" reached the spell-out path and came back "vˈi " — the number
+      // dropped exactly as a decimal used to — "Mk2.5" came back "mˈikˈæŋ",
+      // and "iOS16.4" lost its point. A digit anywhere means this is not an
+      // initialism. Adapted from jlund/MisakiSwift (Apache-2.0).
       //
       // The cutoff is why it looked so arbitrary: "3.500" and "100.1" have a
       // 3-character part and were spoken correctly, while "3.5", "0.5", "12.5"
