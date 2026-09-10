@@ -535,4 +535,11 @@ final public class EnglishG2P {
     let result = finalTokens.map { ( $0.phonemes ?? self.unk ) + $0.whitespace }.joined()
     return (result, finalTokens)
   }
+
+  /// Fallback lookups and hits since the previous consume. Call it right after
+  /// `phonemize` so the counts belong to that text rather than to a running
+  /// total — the counters reset on read.
+  public func consumeFallbackStats() -> G2PFallbackStats {
+    fallback.consumeStats()
+  }
 }
