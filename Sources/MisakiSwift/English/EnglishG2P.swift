@@ -364,7 +364,15 @@ final public class EnglishG2P {
               && token.whitespace.isEmpty
           token.phonemes = isGluedHyphen ? " " : "—"
           token.`_`.rating = 3
-        } else if let tag = token.tag, EnglishG2P.punctuationTags.contains(tag), !token.text.lowercased().unicodeScalars.allSatisfy({ (97...122).contains(Int($0.value)) }) {
+        // `Lexicon.symbolSet[token.text] == nil` — a symbol that HAS a spoken
+        // word must not be taken by the punctuation path. The tagger marks %,
+        // & and @ as punctuation, this branch claimed them first, and the
+        // lexicon never got the chance to turn them into "percent", "and" and
+        // "at". They were not mispronounced, they were DROPPED: "50%" came out
+        // "fˈɪfti", "cats & dogs" came out "kˈæts  dˈɔɡz" with a hole where
+        // the word should be. "+" escaped only because the tagger does not
+        // always call it punctuation.
+        } else if let tag = token.tag, EnglishG2P.punctuationTags.contains(tag), !token.text.lowercased().unicodeScalars.allSatisfy({ (97...122).contains(Int($0.value)) }), Lexicon.symbolSet[token.text] == nil {
           if let val = EnglishG2P.punctuationTagPhonemes[token.text] {
             token.phonemes = val
           } else {
