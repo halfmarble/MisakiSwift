@@ -1,34 +1,28 @@
 # MisakiSwift — halfmarble fork
 
 > **What this is.** A fork of [mlalma/MisakiSwift](https://github.com/mlalma/MisakiSwift)
-> carrying three fixes we needed to ship an iOS app, kept here so others can use them.
-> Upstream has been quiet since June 2026 and has nine open pull requests; several of
-> them fix the same things independently. Nothing here is novel — it is these fixes
-> applied together and tested as a set, which no single upstream PR gives you.
+> carrying the pronunciation, packaging and performance fixes we needed to ship this package
+> in an iOS app, kept here so others can use them. Upstream has been quiet since June 2026.
+> Nothing here is novel — almost every change has an upstream issue or pull request, or comes
+> from another public fork, and is credited where it does. The value is the set, applied
+> together and tested as a set, which no single upstream PR gives you.
 >
-> - **Numbers 21-29 lost their tens word.** `convert(24)` returned `"-four"` and was
->   spoken as "four". It reached composites (`124` -> "one hundred and -four") and years
->   (`2024` -> "twenty -four"). One missing table row. Also filed upstream as
->   [#16](https://github.com/mlalma/MisakiSwift/issues/16) and fixed in
->   [#18](https://github.com/mlalma/MisakiSwift/pull/18).
-> - **iOS codesign rejected the resource bundle** whose top folder was named
->   `Resources`. Renamed to `MisakiData/`. Same ground as
->   [#20](https://github.com/mlalma/MisakiSwift/pull/20).
-> - **mlx-swift pinned to 0.31.6** (0.30.2 will not link against the iOS 26 simulator
->   SDK) and the library product left to link statically, so an app does not end up with
->   two MLX runtimes. Same ground as
->   [#19](https://github.com/mlalma/MisakiSwift/pull/19) and
->   [#13](https://github.com/mlalma/MisakiSwift/pull/13).
+> **[FORK_CHANGES.md](FORK_CHANGES.md) lists every change, what it fixes, and which release it
+> first shipped in.** In short: 21 through 29 lost their tens word; decimals were read through a
+> `Double`, and short ones were dropped silently; a hyphen put a pause inside a compound word;
+> `%`, `&` and `@` were dropped rather than spoken; "read" lost its past tense; the
+> out-of-vocabulary fallback is memoized. Plus the three things it takes to ship on iOS — the
+> resource bundle rename, the mlx-swift pin, and static linking.
 >
-> **What this is not.** Not a hostile fork, and not a claim that upstream is wrong.
-> Everything here has been offered upstream as an issue or a PR, and if upstream
-> merges them we would rather you used upstream.
+> **What this is not.** Not a hostile fork, and not a claim that upstream is wrong. Everything
+> here has been offered upstream as an issue or a PR, and if upstream merges them we would
+> rather you used upstream.
 >
-> **Maintenance.** halfmarble maintains this fork and intends to keep fixing and
-> extending it, because we ship it in production software — bugs here reach real
-> users, so they get fixed here first. Issues and pull requests are welcome. We
-> make no release-cadence or backwards-compatibility promise; pin a commit if you
-> need one.
+> **Maintenance.** halfmarble maintains this fork and intends to keep fixing and extending it,
+> because we ship it in production software — bugs here reach real users, so they get fixed
+> here first. Issues and pull requests are welcome. We make no release-cadence or
+> backwards-compatibility promise; pin a commit if you need one. Fork releases start at 2.0.0 —
+> the inherited 1.0.x tags are upstream's code and carry none of this.
 >
 > Apache-2.0, same as upstream. Modified files carry a notice as section 4(b) requires.
 
