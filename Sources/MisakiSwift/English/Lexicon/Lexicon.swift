@@ -121,7 +121,11 @@ final class Lexicon {
     return phoneticString
   }
   
-  func transcribe(_ token: MToken, ctx: TokenContext) -> (String?, Int?) {
+  /// - Parameter forcedPennTag: a fine-grained Penn tag ("VBD"/"VBN"/"VB") that
+  ///   overrides the coarse NLTag collapse for POS-keyed heteronyms. Apple's
+  ///   NLTagger cannot express verb tense, so nothing else can reach those
+  ///   lexicon entries. Default nil leaves every existing caller unchanged.
+  func transcribe(_ token: MToken, ctx: TokenContext, forcedPennTag: String? = nil) -> (String?, Int?) {
     var word = token.text
     if let alias = token.`_`.alias { word = alias }
     word = word.replacingOccurrences(of: String(UnicodeScalar(8216)!), with: "'")
@@ -131,7 +135,7 @@ final class Lexicon {
     word = String(word.map { unicodeNumericIfNeeded($0) } )
     
     let stress: Double? = (word == word.lowercased() ? nil : (word == word.uppercased() ? capStresses.1 : capStresses.0))
-    let res = getWord(word, tag: token.tag, stress: stress, ctx: ctx)
+    let res = getWord(word, tag: token.tag, stress: stress, ctx: ctx, forcedPennTag: forcedPennTag)
     if let phoneme = res.phoneme {
       return (Lexicon.applyStress(appendCurrency(phoneme, currency: token.`_`.currency), stress: token.`_`.stress), res.rating)
     } else if isNumber(word: word, is_head: token.`_`.is_head) {
@@ -157,7 +161,7 @@ final class Lexicon {
     return c
   }
     
-  private func getWord(_ word: String, tag: NLTag?, stress: Double?, ctx: TokenContext) -> (phoneme: String?, rating: Int?) {
+  private func getWord(_ word: String, tag: NLTag?, stress: Double?, ctx: TokenContext, forcedPennTag: String? = nil) -> (phoneme: String?, rating: Int?) {
     let sc = getSpecialCase(word, tag: tag, stress: stress, ctx: ctx)
     if sc.phoneme != nil { return sc }
     var candidate = word
@@ -174,7 +178,7 @@ final class Lexicon {
     }
     
     if isKnown(candidate) {
-      return lookup(candidate, tag: tag, stress: stress, ctx: ctx)
+      return lookup(candidate, tag: tag, stress: stress, ctx: ctx, forcedPennTag: forcedPennTag)
     } else if candidate.hasSuffix("s'"), isKnown(String(candidate.dropLast(2)) + "'s") {
       return lookup(String(candidate.dropLast(2)) + "'s", tag: tag, stress: stress, ctx: ctx)
     } else if candidate.hasSuffix("'"), isKnown(String(candidate.dropLast())) {
@@ -274,7 +278,7 @@ final class Lexicon {
     return (nil, nil)
   }
     
-  private func lookup(_ w: String, tag: NLTag?, stress: Double?, ctx: TokenContext?) -> (phoneme: String?, rating: Int?) {
+  private func lookup(_ w: String, tag: NLTag?, stress: Double?, ctx: TokenContext?, forcedPennTag: String? = nil) -> (phoneme: String?, rating: Int?) {
     var word = w
     var isNNP: Bool? = nil
     if word == word.uppercased(), golds[word] == nil {
@@ -293,7 +297,15 @@ final class Lexicon {
       if let ctx = ctx, ctx.futureVowel == nil, phonemeDict["None"] != nil {
         t = "XX"
       }
-      phoneticString = phonemeDict[t ?? "DEFAULT"] ?? phonemeDict["DEFAULT"] ?? nil
+      // Upstream Misaki indexes the fine-grained Penn tag before collapsing to
+      // the coarse parent. NLTagger cannot emit verb tense, so an explicit
+      // forcedPennTag is the only way read/reread/wound reach their VBD/VBN
+      // entries instead of always falling through to DEFAULT.
+      if let forced = forcedPennTag, let hit = phonemeDict[forced] ?? nil {
+        phoneticString = hit
+      } else {
+        phoneticString = phonemeDict[t ?? "DEFAULT"] ?? phonemeDict["DEFAULT"] ?? nil
+      }
     }
     
     if phoneticString == nil || (isNNP == true && !(phoneticString as? String ?? "").contains(Lexicon.primaryStress)) {

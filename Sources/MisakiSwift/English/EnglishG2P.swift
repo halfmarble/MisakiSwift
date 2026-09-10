@@ -75,6 +75,24 @@ final public class EnglishG2P {
     return TokenContext(futureVowel: vowel, futureTo: futureTo)
   }
   
+  /// Resolves verb TENSE for the tense-heteronyms from local context and pins
+  /// their phonemes via an explicit Penn tag. Runs on the freshly-tokenized
+  /// sequence, 1:1 with NLTagger words, so a left-neighbour auxiliary is still
+  /// adjacent; once `phonemes` is set the main resolution loop leaves the token
+  /// alone.
+  private func disambiguateTenseHeteronyms(_ tokens: [MToken]) {
+    for (i, token) in tokens.enumerated() {
+      guard token.phonemes == nil, token.`_`.alias == nil,
+            EnglishG2P.tenseHeteronyms.contains(token.text.lowercased()),
+            let forced = EnglishG2P.tenseTag(for: tokens, at: i) else { continue }
+      let out = lexicon.transcribe(token, ctx: TokenContext(), forcedPennTag: forced)
+      if let phonemes = out.0 {
+        token.phonemes = phonemes
+        token.`_`.rating = out.1
+      }
+    }
+  }
+
   func stressWeight(_ phonemes: String?) -> Int {
     let dipthongs = Set("AIOQWYʤʧ")
     guard let phonemes else { return 0 }
@@ -424,6 +442,7 @@ final public class EnglishG2P {
     }
 
     var tokens = tokenize(preprocessedText: pre)
+    disambiguateTenseHeteronyms(tokens)
     tokens = foldLeft(tokens)
     
     let words = retokenize(tokens)
